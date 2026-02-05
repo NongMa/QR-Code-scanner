@@ -1,5 +1,3 @@
-import 'dart:io';
-
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:provider/provider.dart';
@@ -36,25 +34,15 @@ class MyApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    const Color primarySeedColor = Colors.deepPurple;
+    const MaterialColor primarySeedColor = Colors.deepPurple;
 
-    // Use system fonts in test environment to avoid network errors.
-    final bool isTesting = Platform.environment.containsKey('FLUTTER_TEST');
-
-    final TextTheme appTextTheme = isTesting
-        ? const TextTheme(
-            displayLarge:
-                TextStyle(fontSize: 57, fontWeight: FontWeight.bold),
-            titleLarge: TextStyle(fontSize: 22, fontWeight: FontWeight.w500),
-            bodyMedium: TextStyle(fontSize: 14),
-          )
-        : TextTheme(
-            displayLarge:
-                GoogleFonts.oswald(fontSize: 57, fontWeight: FontWeight.bold),
-            titleLarge:
-                GoogleFonts.roboto(fontSize: 22, fontWeight: FontWeight.w500),
-            bodyMedium: GoogleFonts.openSans(fontSize: 14),
-          );
+    final TextTheme appTextTheme = TextTheme(
+      displayLarge:
+          GoogleFonts.oswald(fontSize: 57, fontWeight: FontWeight.bold),
+      titleLarge:
+          GoogleFonts.roboto(fontSize: 22, fontWeight: FontWeight.w500),
+      bodyMedium: GoogleFonts.openSans(fontSize: 14),
+    );
 
     final ThemeData lightTheme = ThemeData(
       useMaterial3: true,
@@ -66,8 +54,7 @@ class MyApp extends StatelessWidget {
       appBarTheme: AppBarTheme(
         backgroundColor: primarySeedColor,
         foregroundColor: Colors.white,
-        titleTextStyle:
-            isTesting ? const TextStyle(fontSize: 24) : GoogleFonts.oswald(fontSize: 24, fontWeight: FontWeight.bold),
+        titleTextStyle: GoogleFonts.oswald(fontSize: 24, fontWeight: FontWeight.bold),
       ),
       elevatedButtonTheme: ElevatedButtonThemeData(
         style: ElevatedButton.styleFrom(
@@ -75,8 +62,7 @@ class MyApp extends StatelessWidget {
           backgroundColor: primarySeedColor,
           shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
           padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 12),
-          textStyle:
-              isTesting ? const TextStyle(fontSize: 16) : GoogleFonts.roboto(fontSize: 16, fontWeight: FontWeight.w500),
+          textStyle: GoogleFonts.roboto(fontSize: 16, fontWeight: FontWeight.w500),
         ),
       ),
     );
@@ -91,8 +77,7 @@ class MyApp extends StatelessWidget {
       appBarTheme: AppBarTheme(
         backgroundColor: Colors.grey[900],
         foregroundColor: Colors.white,
-        titleTextStyle:
-            isTesting ? const TextStyle(fontSize: 24) : GoogleFonts.oswald(fontSize: 24, fontWeight: FontWeight.bold),
+        titleTextStyle: GoogleFonts.oswald(fontSize: 24, fontWeight: FontWeight.bold),
       ),
       elevatedButtonTheme: ElevatedButtonThemeData(
         style: ElevatedButton.styleFrom(
@@ -100,8 +85,7 @@ class MyApp extends StatelessWidget {
           backgroundColor: primarySeedColor.shade200,
           shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
           padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 12),
-          textStyle:
-              isTesting ? const TextStyle(fontSize: 16) : GoogleFonts.roboto(fontSize: 16, fontWeight: FontWeight.w500),
+          textStyle: GoogleFonts.roboto(fontSize: 16, fontWeight: FontWeight.w500),
         ),
       ),
     );
