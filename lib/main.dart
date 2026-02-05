@@ -1,8 +1,10 @@
+import 'dart:io';
+
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:provider/provider.dart';
-import 'package:myapp/scanner_screen.dart';
-import 'package:myapp/history_screen.dart';
+import 'package:quick_scanner/history_screen.dart';
+import 'package:quick_scanner/scanner_screen.dart';
 
 void main() {
   runApp(
@@ -19,9 +21,12 @@ class ThemeProvider with ChangeNotifier {
   ThemeMode get themeMode => _themeMode;
 
   void toggleTheme() {
-    _themeMode = _themeMode == ThemeMode.light
-        ? ThemeMode.dark
-        : ThemeMode.light;
+    _themeMode = _themeMode == ThemeMode.light ? ThemeMode.dark : ThemeMode.light;
+    notifyListeners();
+  }
+
+  void setSystemTheme() {
+    _themeMode = ThemeMode.system;
     notifyListeners();
   }
 }
@@ -31,16 +36,25 @@ class MyApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    const MaterialColor primarySeedColor = Colors.deepPurple;
+    const Color primarySeedColor = Colors.deepPurple;
 
-    final TextTheme appTextTheme = TextTheme(
-      displayLarge: GoogleFonts.oswald(
-        fontSize: 57,
-        fontWeight: FontWeight.bold,
-      ),
-      titleLarge: GoogleFonts.roboto(fontSize: 22, fontWeight: FontWeight.w500),
-      bodyMedium: GoogleFonts.openSans(fontSize: 14),
-    );
+    // Use system fonts in test environment to avoid network errors.
+    final bool isTesting = Platform.environment.containsKey('FLUTTER_TEST');
+
+    final TextTheme appTextTheme = isTesting
+        ? const TextTheme(
+            displayLarge:
+                TextStyle(fontSize: 57, fontWeight: FontWeight.bold),
+            titleLarge: TextStyle(fontSize: 22, fontWeight: FontWeight.w500),
+            bodyMedium: TextStyle(fontSize: 14),
+          )
+        : TextTheme(
+            displayLarge:
+                GoogleFonts.oswald(fontSize: 57, fontWeight: FontWeight.bold),
+            titleLarge:
+                GoogleFonts.roboto(fontSize: 22, fontWeight: FontWeight.w500),
+            bodyMedium: GoogleFonts.openSans(fontSize: 14),
+          );
 
     final ThemeData lightTheme = ThemeData(
       useMaterial3: true,
@@ -52,10 +66,8 @@ class MyApp extends StatelessWidget {
       appBarTheme: AppBarTheme(
         backgroundColor: primarySeedColor,
         foregroundColor: Colors.white,
-        titleTextStyle: GoogleFonts.oswald(
-          fontSize: 24,
-          fontWeight: FontWeight.bold,
-        ),
+        titleTextStyle:
+            isTesting ? const TextStyle(fontSize: 24) : GoogleFonts.oswald(fontSize: 24, fontWeight: FontWeight.bold),
       ),
       elevatedButtonTheme: ElevatedButtonThemeData(
         style: ElevatedButton.styleFrom(
@@ -63,10 +75,8 @@ class MyApp extends StatelessWidget {
           backgroundColor: primarySeedColor,
           shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
           padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 12),
-          textStyle: GoogleFonts.roboto(
-            fontSize: 16,
-            fontWeight: FontWeight.w500,
-          ),
+          textStyle:
+              isTesting ? const TextStyle(fontSize: 16) : GoogleFonts.roboto(fontSize: 16, fontWeight: FontWeight.w500),
         ),
       ),
     );
@@ -81,10 +91,8 @@ class MyApp extends StatelessWidget {
       appBarTheme: AppBarTheme(
         backgroundColor: Colors.grey[900],
         foregroundColor: Colors.white,
-        titleTextStyle: GoogleFonts.oswald(
-          fontSize: 24,
-          fontWeight: FontWeight.bold,
-        ),
+        titleTextStyle:
+            isTesting ? const TextStyle(fontSize: 24) : GoogleFonts.oswald(fontSize: 24, fontWeight: FontWeight.bold),
       ),
       elevatedButtonTheme: ElevatedButtonThemeData(
         style: ElevatedButton.styleFrom(
@@ -92,10 +100,8 @@ class MyApp extends StatelessWidget {
           backgroundColor: primarySeedColor.shade200,
           shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
           padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 12),
-          textStyle: GoogleFonts.roboto(
-            fontSize: 16,
-            fontWeight: FontWeight.w500,
-          ),
+          textStyle:
+              isTesting ? const TextStyle(fontSize: 16) : GoogleFonts.roboto(fontSize: 16, fontWeight: FontWeight.w500),
         ),
       ),
     );
@@ -103,7 +109,7 @@ class MyApp extends StatelessWidget {
     return Consumer<ThemeProvider>(
       builder: (context, themeProvider, child) {
         return MaterialApp(
-          title: 'QR Code Scanner',
+          title: 'Quick Scanner',
           theme: lightTheme,
           darkTheme: darkTheme,
           themeMode: themeProvider.themeMode,
@@ -119,47 +125,34 @@ class MyHomePage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final themeProvider = Provider.of<ThemeProvider>(context);
-
     return Scaffold(
       appBar: AppBar(
-        title: const Text('QR Code Scanner'),
-        actions: [
-          IconButton(
-            icon: Icon(
-              themeProvider.themeMode == ThemeMode.dark
-                  ? Icons.light_mode
-                  : Icons.dark_mode,
-            ),
-            onPressed: () => themeProvider.toggleTheme(),
-            tooltip: 'Toggle Theme',
-          ),
-        ],
+        title: const Text('Quick Scanner'),
       ),
       body: Center(
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: <Widget>[
-            ElevatedButton(
+            ElevatedButton.icon(
+              icon: const Icon(Icons.qr_code_scanner),
+              label: const Text('Scan Code'),
               onPressed: () {
-                Navigator.of(context).push(
-                  MaterialPageRoute(
-                    builder: (context) => const ScannerScreen(),
-                  ),
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(builder: (context) => const ScannerScreen()),
                 );
               },
-              child: const Text('Scan QR Code'),
             ),
             const SizedBox(height: 20),
-            ElevatedButton(
+            ElevatedButton.icon(
+              icon: const Icon(Icons.history),
+              label: const Text('Scan History'),
               onPressed: () {
-                Navigator.of(context).push(
-                  MaterialPageRoute(
-                    builder: (context) => const HistoryScreen(),
-                  ),
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(builder: (context) => const HistoryScreen()),
                 );
               },
-              child: const Text('View History'),
             ),
           ],
         ),

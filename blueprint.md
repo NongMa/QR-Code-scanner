@@ -38,3 +38,8 @@ Implement a QR code scanning feature that includes:
         - Load the scan history from `SharedPreferences`.
         - Display the history in a `ListView`.
         - Add a button to clear the scan history.
+
+## Current Status
+
+- **Fixed:** Correctly implemented the flashlight toggle functionality in `scanner_screen.dart` using `setState` after identifying the correct API usage for the `mobile_scanner: 5.2.3` package.
+- **Completed:** All planned features for the QR scanner application are now implemented.
